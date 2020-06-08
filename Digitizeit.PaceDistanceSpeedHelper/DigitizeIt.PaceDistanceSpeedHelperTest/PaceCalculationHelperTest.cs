@@ -292,5 +292,85 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest
 
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void Given_a_decimal_distance_in_meter_over_time_in_seconds_the_right_Mph_value_is_returned()
+        {
+            //Arrange
+            decimal distance = 100000;
+            var seconds = 3600;
+            double expected = 62.14;
+
+            //Act
+            var result = distance.DistanceMetersInSecondsToMph(seconds);
+
+            //Assert
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Given_a_double_distance_in_meter_over_time_in_seconds_the_right_Mph_value_is_returned()
+        {
+            //Arrange
+            double distance = 100000;
+            var seconds = 3600;
+            double expected = 62.14;
+
+            //Act
+            var result = distance.DistanceMetersInSecondsToMph(seconds);
+
+            //Assert
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Given_a_float_distance_in_meter_over_time_in_seconds_the_right_Mph_value_is_returned()
+        {
+            //Arrange
+            float distance = 100000;
+            var seconds = 3600;
+            double expected = 62.14;
+
+            //Act
+            var result = distance.DistanceMetersInSecondsToMph(seconds);
+
+            //Assert
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Given_a_short_distance_in_meter_over_time_in_seconds_the_right_Mph_value_is_returned()
+        {
+            //Arrange
+            short distance = 1000;
+            var seconds = 360;
+            double expected = 6.21;
+
+            //Act
+            var result = distance.DistanceMetersInSecondsToMph(seconds);
+
+            //Assert
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Given_a_long_distance_in_meter_over_time_in_seconds_the_right_Mph_value_is_returned()
+        {
+            //Arrange
+            long distance = 1000;
+            var seconds = 360;
+            double expected = 6.21;
+
+            //Act
+            var result = distance.DistanceMetersInSecondsToMph(seconds);
+
+            //Assert
+
+            Assert.Equal(expected, result);
+        }
     }
 }
