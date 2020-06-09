@@ -1,7 +1,7 @@
-using Digitizeit.PaceDistanceSpeedHelper;
+using Digitizeit.PaceDistanceSpeedHelper.PaceHelper;
 using Xunit;
 
-namespace DigitizeIt.PaceDistanceSpeedHelperTest
+namespace DigitizeIt.PaceDistanceSpeedHelperTest.PaceHelper
 {
     public class PaceCalculationHelperTest
     {
