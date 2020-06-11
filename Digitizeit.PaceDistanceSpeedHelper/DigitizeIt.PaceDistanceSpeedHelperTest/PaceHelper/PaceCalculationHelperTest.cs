@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Digitizeit.PaceDistanceSpeedHelper.PaceHelper;
 using Xunit;
 
@@ -12,12 +14,29 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest.PaceHelper
             int distance = 1000;
             var seconds = 360;
             double expected = 6;
+            List<(int, int)> pp = new List<(int, int)>() { (1000, 360), (100, 36) };
+
+            var tempo = pp.DistanceMetersInSecondsToMinKm();
 
             //Act
             var result = distance.DistanceMetersInSecondsToMinKm(seconds);
 
             //Assert
 
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void Given_a_list_of_tuples_with_distance_in_meters_over_seconds_the_right_min_km_values_is_returned()
+        {
+            //Arrange
+            List<double> expected = new List<double>() { 6, 6 };
+            List<(int, int)> items = new List<(int, int)>() { (1000, 360), (100, 36) };
+
+            //Act
+            var result = items.DistanceMetersInSecondsToMinKm();
+
+            //Assert
             Assert.Equal(expected, result);
         }
 
