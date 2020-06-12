@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -29,6 +30,39 @@ namespace Digitizeit.PaceDistanceSpeedHelper.PaceHelper
             var secPart = minSec - min;
             var sec = secPart * 60;
             return Math.Round(min + sec / 100, 2);
+        }
+
+        /// <summary>
+        /// Transform distance traveled in meters over time passed in seconds to minutes/KM pace.
+        /// Filters each item of an IEnumerable(Tuple(T,int)) where predicate is true.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the source enumerable.</typeparam>
+        /// <param name="source">IEnumerable Tuple(numeric, int)</param>
+        /// <param name="predicate">Filter out predicate false values</param>
+        /// <returns><see cref="IEnumerable{double}"/> where predicate is true</returns>
+        public static IEnumerable<double> DistanceMetersInSecondsToMinKm<TSource>(
+            this IEnumerable<(TSource distance, int seconds)> source, Func<(TSource distance, int seconds), bool> predicate)
+            where TSource :
+            struct,
+            IComparable,
+            IComparable<TSource>,
+            IConvertible,
+            IEquatable<TSource>,
+            IFormattable
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
+            var returnList = new List<double>();
+            foreach (var sourceValue in source)
+            {
+                if (predicate(sourceValue))
+                {
+                    returnList.Add(DistanceMetersInSecondsToMinKm(sourceValue.distance, sourceValue.seconds));
+                }
+            }
+
+            return returnList;
         }
 
         /// <summary>
