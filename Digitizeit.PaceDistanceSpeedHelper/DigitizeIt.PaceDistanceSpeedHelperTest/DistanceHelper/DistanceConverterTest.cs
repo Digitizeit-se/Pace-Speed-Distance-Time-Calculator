@@ -15,7 +15,7 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest.DistanceHelper
             double expected = 2.143730613218802;
 
             //Act
-            var result = distance.ConvertMetersToMiles();
+            var result = distance.ConvertDistance(DistanceUnitsMetrics.Meter, DistanceUnitsImperialUS.Mile);
 
             //Assert
             Assert.Equal(expected, result);
@@ -29,7 +29,7 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest.DistanceHelper
             double expected = 2.143730613218802;
 
             //Act
-            var result = distance.ConvertMetersToMiles();
+            var result = distance.ConvertDistance(DistanceUnitsMetrics.Meter, DistanceUnitsImperialUS.Mile);
 
             //Assert
             Assert.Equal(expected, result);
@@ -43,7 +43,7 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest.DistanceHelper
             double expected = 2.143730613218802;
 
             //Act
-            var result = distance.ConvertMetersToMiles();
+            var result = distance.ConvertDistance(DistanceUnitsMetrics.Meter, DistanceUnitsImperialUS.Mile);
 
             //Assert
             Assert.Equal(expected, result);
@@ -57,7 +57,7 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest.DistanceHelper
             double expected = 2.143730613218802;
 
             //Act
-            var result = distance.ConvertMetersToMiles();
+            var result = distance.ConvertDistance(DistanceUnitsMetrics.Meter, DistanceUnitsImperialUS.Mile);
 
             //Assert
             Assert.Equal(expected, result);
@@ -71,7 +71,7 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest.DistanceHelper
             double expected = 2.143730613218802;
 
             //Act
-            var result = distance.ConvertMetersToMiles();
+            var result = distance.ConvertDistance(DistanceUnitsMetrics.Meter, DistanceUnitsImperialUS.Mile);
 
             //Assert
             Assert.Equal(expected, result);
@@ -85,7 +85,7 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest.DistanceHelper
             double expected = 2.143730613218802;
 
             //Act
-            var result = distance.ConvertMetersToMiles();
+            var result = distance.ConvertDistance(DistanceUnitsMetrics.Meter, DistanceUnitsImperialUS.Mile);
 
             //Assert
             Assert.Equal(expected, result);
@@ -99,13 +99,12 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest.DistanceHelper
             double distance = 2.143730613218802;
 
             //Act
-            var result = distance.ConvertMileToMeter();
+            var result = distance.ConvertDistance(DistanceUnitsImperialUS.Mile, DistanceUnitsMetrics.Meter);
 
             //Assert
             Assert.Equal(expected, result);
         }
 
-        //Metric to metric convertions
         [Fact]
         public void Given_a_number_in_centimeter_transformed_to_millimeter_the_right_value_is_returned()
         {
@@ -274,6 +273,46 @@ namespace DigitizeIt.PaceDistanceSpeedHelperTest.DistanceHelper
 
             //Assert
             result.Should().Be(2);
+        }
+
+        // Imperial to metric
+        [Fact]
+        public void Given_a_ImperialMile_transformed_to_meters_the_right_value_is_returned()
+        {
+            //Arrange
+            var number = 2; // miles
+
+            //Act
+            var result = number.ConvertDistance(DistanceUnitsImperialUS.Mile, DistanceUnitsMetrics.Meter, 3);
+
+            //Assert
+            result.Should().Be(3218.688);
+        }
+
+        [Fact]
+        public void Given_a_ImperialMile_transformed_to_kilometer_the_right_value_is_returned()
+        {
+            //Arrange
+            var number = 5; // miles
+
+            //Act
+            var result = number.ConvertDistance(DistanceUnitsImperialUS.Mile, DistanceUnitsMetrics.KiloMeter, 5);
+
+            //Assert
+            result.Should().Be(8.04672);
+        }
+
+        [Fact]
+        public void Given_distance_in_yards_transformed_to_centimeters_the_right_value_is_returned()
+        {
+            //Arrange
+            var number = 50;// yards
+
+            //Act
+            var result = number.ConvertDistance(DistanceUnitsImperialUS.Yard, DistanceUnitsMetrics.CentiMeter);
+
+            //Assert
+            result.Should().Be(4572);
         }
     }
 }
