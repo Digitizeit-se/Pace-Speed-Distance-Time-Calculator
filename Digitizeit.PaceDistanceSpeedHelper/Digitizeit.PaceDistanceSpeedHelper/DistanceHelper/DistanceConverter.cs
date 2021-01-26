@@ -1,10 +1,18 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace Digitizeit.PaceDistanceSpeedHelper.DistanceHelper
 {
     public static class DistanceConverter
     {
+        private static readonly IReadOnlyDictionary<string, double> ImperialUsInMeters = new Dictionary<string, double>()
+        {
+            {"Yard",0.9144 },
+            {"Mile", 1609.344 },
+            {"Foot",0.3048},
+            {"Inch", 0.0254 }
+        };
+
         /// <summary>
         /// Convert numeric type value in metric to double metric value.
         /// </summary>
@@ -12,6 +20,7 @@ namespace Digitizeit.PaceDistanceSpeedHelper.DistanceHelper
         /// <param name="distance">Distance in metric unit to convert to metric unit</param>
         /// <param name="from">Current metric unit</param>
         /// <param name="to">transform to metric unit</param>
+        /// <param name="decimals">number of decimal points</param>
         /// <returns>return transformed metric value as double</returns>
         public static double ConvertDistance<T>(this T distance, DistanceUnitsMetrics from, DistanceUnitsMetrics to, int? decimals = null) where T :
             struct,
@@ -21,25 +30,43 @@ namespace Digitizeit.PaceDistanceSpeedHelper.DistanceHelper
             IEquatable<T>,
             IFormattable
         {
+            int pow;
+            var dd = (double)Convert.ChangeType(distance, typeof(double));
+            double result;
+
+            if ((int)to == (int)from) return dd;
+
             if ((int)to < (int)from)
             {
-                var up = (int)to - (int)from;
-                var dd = (double)Convert.ChangeType(distance, typeof(double));
-                var result = dd * Math.Pow(10, Math.Abs(up));
+                pow = (int)to - (int)from;
+                result = dd * Math.Pow(10, Math.Abs(pow));
 
                 return decimals != null ? Math.Round(result, (int)decimals) : result;
             }
 
-            if ((int)to <= (int)@from) return (double)Convert.ChangeType(distance, typeof(double));
+            if (from >= 0)
             {
-                var up = (int)to + (int)@from;
-                var dd = (double)Convert.ChangeType(distance, typeof(double));
-                var result = dd * Math.Pow(10, up);
-
-                return decimals != null ? Math.Round(result, (int)decimals) : result;
+                pow = ((int)to + (int)from) * -1;
             }
+            else
+            {
+                pow = (int)to + (int)from;
+            }
+
+            result = dd * Math.Pow(10, pow);
+
+            return decimals != null ? Math.Round(result, (int)decimals) : result;
         }
 
+        /// <summary>
+        /// Convert a Imperial / US numeric value from one unit to another unit
+        /// </summary>
+        /// <typeparam name="T">The numeric type</typeparam>
+        /// <param name="distance">Numeric in imperial / us unit to convert to another unit </param>
+        /// <param name="from">Current imperial / us value to convert from</param>
+        /// <param name="to">Imperial / us unit to convert distance to</param>
+        /// <param name="decimals">Number of decimals in return value</param>
+        /// <returns>Converted distance </returns>
         public static double ConvertDistance<T>(this T distance, DistanceUnitsImperialUS from,
             DistanceUnitsImperialUS to, int? decimals = null) where T :
             struct,
@@ -49,27 +76,23 @@ namespace Digitizeit.PaceDistanceSpeedHelper.DistanceHelper
             IEquatable<T>,
             IFormattable
         {
-            double dd;
+            var dd = (double)Convert.ChangeType(distance, typeof(double));
             double result;
 
-            //No convert return value as double
-            if (from == to) return (double)Convert.ChangeType(distance, typeof(double));
+            if (from == to) return dd;
 
             if (from == DistanceUnitsImperialUS.Inch)
             {
-                dd = (double)Convert.ChangeType(distance, typeof(double));
                 result = dd / (double)to;
                 return decimals != null ? Math.Round(result, (int)decimals) : result;
             }
 
             if (to == DistanceUnitsImperialUS.Inch)
             {
-                dd = (double)Convert.ChangeType(distance, typeof(double));
                 result = dd * (double)from;
                 return decimals != null ? Math.Round(result, (int)decimals) : result;
             }
 
-            dd = (double)Convert.ChangeType(distance, typeof(double));
             if ((int)from > (int)to)
             {
                 result = dd * ((double)from / (double)to);
@@ -82,11 +105,16 @@ namespace Digitizeit.PaceDistanceSpeedHelper.DistanceHelper
         }
 
         /// <summary>
-        /// Convert english miles to meter
+        /// Convert Imperial / us unit to metric unit
         /// </summary>
-        /// <param name="distance">(english) mile</param>
-        /// <returns>double distance in meters</returns>
-        public static double ConvertMileToMeter<T>(this T distance) where T :
+        /// <typeparam name="T"></typeparam>
+        /// <param name="distance">Distance to convert</param>
+        /// <param name="from">Current unit</param>
+        /// <param name="to">Unit to convert to</param>
+        /// <param name="decimals">number of decimals in output</param>
+        /// <returns>Converted distance</returns>
+        public static double ConvertDistance<T>(this T distance, DistanceUnitsImperialUS from,
+            DistanceUnitsMetrics to, int? decimals = null) where T :
             struct,
             IComparable,
             IComparable<T>,
@@ -94,18 +122,30 @@ namespace Digitizeit.PaceDistanceSpeedHelper.DistanceHelper
             IEquatable<T>,
             IFormattable
         {
-            var typedDistance = (double)Convert.ChangeType(distance, typeof(double));
-            var mile = 1609.344;
-            return typedDistance * mile;
+            var dd = (double)Convert.ChangeType(distance, typeof(double));
+
+            var meters = dd * ImperialUsInMeters[from.ToString()];
+            if (to == DistanceUnitsMetrics.Meter)
+            {
+                return decimals != null ? Math.Round(meters, (int)decimals) : meters;
+            }
+
+            var metric = meters.ConvertDistance(DistanceUnitsMetrics.Meter, to);
+
+            return decimals != null ? Math.Round(metric, (int)decimals) : metric;
         }
 
         /// <summary>
-        /// Convert meters to english miles.
+        /// Convert distance in metric unit to imperial / us unit
         /// </summary>
-        /// <param name="distance">Meters</param>
-        /// <param name="decimals">Number of fractional digits</param>
-        /// <returns>double distance in (english) miles</returns>
-        public static double ConvertMetersToMiles<T>(this T distance, int? decimals = null) where T :
+        /// <typeparam name="T">distance type</typeparam>
+        /// <param name="distance">numeric distance</param>
+        /// <param name="from">Metric unit</param>
+        /// <param name="to">Imperial / us unit</param>
+        /// <param name="decimals">number of decimals in output </param>
+        /// <returns>The converted double imperial value</returns>
+        public static double ConvertDistance<T>(this T distance, DistanceUnitsMetrics from,
+            DistanceUnitsImperialUS to, int? decimals = null) where T :
             struct,
             IComparable,
             IComparable<T>,
@@ -113,15 +153,15 @@ namespace Digitizeit.PaceDistanceSpeedHelper.DistanceHelper
             IEquatable<T>,
             IFormattable
         {
-            var mile = 1609.344;
-            var typedDistance = (double)Convert.ChangeType(distance, typeof(double));
-            var result = typedDistance / mile;
-            if (decimals != null)
+            var dd = (double)Convert.ChangeType(distance, typeof(double));
+            if (from != DistanceUnitsMetrics.Meter)
             {
-                return Math.Round(result, (int)decimals);
+                dd = dd.ConvertDistance(from, DistanceUnitsMetrics.Meter);
             }
 
-            return result;
+            var imperial = dd / ImperialUsInMeters[to.ToString()];
+
+            return decimals != null ? Math.Round(imperial, (int)decimals) : imperial;
         }
     }
 }
