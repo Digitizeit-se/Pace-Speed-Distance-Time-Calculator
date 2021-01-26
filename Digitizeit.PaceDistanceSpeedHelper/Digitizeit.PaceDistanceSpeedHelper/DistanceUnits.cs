@@ -27,25 +27,4 @@ namespace Digitizeit.PaceDistanceSpeedHelper
         Foot = 12,
         Inch = 0
     }
-
-    public class Transformer
-    {
-        public IReadOnlyDictionary<string, double> ImperialUsToMeters = new Dictionary<string, double>()
-        {
-            {"Yard",0.9144 },
-            {"Mile", 1609.344 },
-            {"Foot",0.3048},
-            {"Inch", 0.0254 }
-        };
-
-        public IReadOnlyDictionary<string, double> MetersToImperialUs = new Dictionary<string, double>()
-        {
-            {"Yard",0.9144 },
-            {"Mile", 1609.344 },
-            {"Foot",0.3048},
-            {"Inch", 0.0254 }
-        };
-
-        //1.609344
-    }
 }
